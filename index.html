@@ -2,74 +2,91 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>GPS Game</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPS Proximity Game</title>
     <style>
-        /* Add your CSS styling here */
+        body {
+            text-align: center;
+            padding-top: 50px;
+            font-family: Arial, sans-serif;
+        }
         #myButton {
-            padding: 10px;
-            background-color: grey;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
             border: none;
             border-radius: 5px;
-            color: white;
             cursor: pointer;
+            font-size: 16px;
         }
         #myButton:disabled {
             background-color: #cccccc;
             cursor: not-allowed;
         }
+
+        /* Responsive design */
+        @media (max-width: 600px) {
+            body {
+                padding-top: 20px;
+            }
+            #myButton {
+                width: 80%;
+                font-size: 14px;
+                padding: 10px;
+            }
+        }
     </style>
 </head>
 <body>
+    <h2>GPS Proximity Game</h2>
+    <p>Press the button when you are within 5 meters of the target location.</p>
     <button id="myButton" disabled>Check-in</button>
 
     <script>
-        // Add your JavaScript here
         const targetLatitude = 49.4469123;
         const targetLongitude = 32.0578783;
         const proximity = 5; // meters
+
+        function checkProximity() {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const userLatitude = position.coords.latitude;
+                    const userLongitude = position.coords.longitude;
+                    const distance = getDistanceFromLatLonInM(userLatitude, userLongitude, targetLatitude, targetLongitude);
+                    if (distance <= proximity) {
+                        document.getElementById('myButton').disabled = false;
+                    } else {
+                        document.getElementById('myButton').disabled = true;
+                    }
+                }, function(error) {
+                    alert('Error getting location: ' + error.message);
+                });
+            } else {
+                alert('Geolocation is not supported by your browser');
+            }
+        }
+
+        function getDistanceFromLatLonInM(lat1, lon1, lat2, lon2) {
+            var R = 6371; // Radius of the earth in km
+            var dLat = deg2rad(lat2 - lat1);
+            var dLon = deg2rad(lon2 - lon1);
+            var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            var d = R * c; // Distance in km
+            return d * 1000; // Distance in meters
+        }
+
+        function deg2rad(deg) {
+            return deg * (Math.PI / 180)
+        }
 
         document.getElementById('myButton').addEventListener('click', function() {
             alert('Checkpoint activated!');
         });
 
-        function checkProximity(position) {
-            const userLatitude = position.coords.latitude;
-            const userLongitude = position.coords.longitude;
-
-            const distance = getDistanceFromLatLonInM(userLatitude, userLongitude, targetLatitude, targetLongitude);
-
-            if (distance <= proximity) {
-                document.getElementById('myButton').disabled = false;
-            }
-        }
-
-        // Haversine formula to calculate distance
-        function getDistanceFromLatLonInM(lat1, lon1, lat2, lon2) {
-            var R = 6371; // Radius of the earth in km
-            var dLat = deg2rad(lat2-lat1);
-            var dLon = deg2rad(lon2-lon1);
-            var a = 
-                Math.sin(dLat/2) * Math.sin(dLat/2) +
-                Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
-                Math.sin(dLon/2) * Math.sin(dLon/2)
-                ; 
-            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-            var d = R * c; // Distance in km
-            return d * 1000; // Distance in m
-        }
-
-        function deg2rad(deg) {
-            return deg * (Math.PI/180)
-        }
-
-        // Check user's current position
-        if ("geolocation" in navigator) {
-            navigator.geolocation.getCurrentPosition(checkProximity, function(error) {
-                alert('Error getting location');
-            });
-        } else {
-            alert('Geolocation is not supported by your browser');
-        }
+        setInterval(checkProximity, 5000); // Check position every 5 seconds
     </script>
 </body>
 </html>
