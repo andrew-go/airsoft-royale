@@ -60,7 +60,7 @@
                 if (response.ok) {
                     const sessionToken = await response.json(); // Assuming the response is just the GUID as text
                     // Store the session token in localStorage
-                    localStorage.setItem('sessionToken', sessionToken.SessionTokenId);
+                    localStorage.setItem('sessionToken', sessionToken.sessionTokenId);
 
                     // Redirect to the game page
                     window.location.href = 'join-game.html';
