@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- ... -->
+</head>
+<body>
+    <!-- Login form -->
+    <form id="loginForm">
+        <!-- Fields for username/password or other login info -->
+        <button type="submit">Login</button>
+    </form>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            try {
+                // Make a GET request to the login endpoint
+                const response = await fetch('http://localhost:5215/login');
+
+                if (response.ok) {
+                    const sessionToken = await response.text(); // Assuming the response is just the GUID as text
+                    // Store the session token in localStorage
+                    localStorage.setItem('sessionToken', sessionToken);
+
+                    // Redirect to the game page
+                    window.location.href = 'index.html';
+                } else {
+                    // Handle non-successful responses
+                    console.error('Login failed: ', response.status);
+                }
+            } catch (error) {
+                console.error('Error during fetch: ', error);
+            }
+        });
+    </script>
+</body>
+</html>

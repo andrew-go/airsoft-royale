@@ -86,6 +86,11 @@
             alert('Checkpoint activated!');
         });
 
+        if (!localStorage.getItem('sessionToken')) {
+            // No session token found, redirect to the login page
+            window.location.href = 'login.html';
+        }
+
         setInterval(checkProximity, 5000); // Check position every 5 seconds
     </script>
 </body>
