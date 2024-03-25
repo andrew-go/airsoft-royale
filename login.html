@@ -58,9 +58,9 @@
                 const response = await fetch('http://localhost:5215/login');
 
                 if (response.ok) {
-                    const sessionToken = await response.text(); // Assuming the response is just the GUID as text
+                    const sessionToken = await response.json(); // Assuming the response is just the GUID as text
                     // Store the session token in localStorage
-                    localStorage.setItem('sessionToken', sessionToken);
+                    localStorage.setItem('sessionToken', sessionToken.SessionTokenId);
 
                     // Redirect to the game page
                     window.location.href = 'join-game.html';
