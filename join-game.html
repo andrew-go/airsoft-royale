@@ -16,6 +16,14 @@
             height: 100vh;
             background-color: #f7f7f7;
         }
+
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
         .input-field {
             margin: 10px 0;
             padding: 10px;
@@ -25,6 +33,7 @@
             width: 80%;
             max-width: 300px; /* Adjust the max-width as needed */
         }
+
         #joinButton {
             background-color: #4CAF50;
             color: white;
@@ -38,25 +47,19 @@
             width: 80%;
             max-width: 300px;
         }
+
         #joinButton:disabled {
             background-color: #cccccc;
             cursor: not-allowed;
         }
-        label {
-            font-size: 14px;
-        }
     </style>
 </head>
 <body>
-    <div>
-        <label for="teamKey">Enter team key</label>
+    <div class="form-container">
         <input type="text" id="teamKey" class="input-field" placeholder="Team Key">
-    </div>
-    <div>
-        <label for="gameKey">Enter game key</label>
         <input type="text" id="gameKey" class="input-field" placeholder="Game Key">
+        <button id="joinButton" disabled>Join Game</button>
     </div>
-    <button id="joinButton" disabled>Join Game</button>
 
     <script>
         // Redirect to login if no session
@@ -77,11 +80,11 @@
         gameKeyInput.addEventListener('input', updateButtonState);
 
         joinButton.addEventListener('click', async function() {
-            const teamKey = teamKeyInput.value;
-            const gameKey = gameKeyInput.value;
+            const teamId = teamKeyInput.value;
+            const gameId = gameKeyInput.value;
             try {
                 // Send request to the server
-                const response = await fetch(`http://localhost:5215/games/${gameKey}`, {
+                const response = await fetch(`http://localhost:5215/games/${gameId}/teams/${teamId}/join`, {
                     method: 'GET', // Adjust the method and headers as per your API requirements
                     // headers: { ... }
                 });
@@ -89,6 +92,9 @@
                 if (response.ok) {
                     // Handle successful join
                     console.log('Joined game successfully');
+
+                    // Redirect to the index.html page
+                    window.location.href = 'index.html';
                 } else {
                     console.error('Failed to join game: ', response.status);
                 }
@@ -97,5 +103,6 @@
             }
         });
     </script>
+
 </body>
 </html>
