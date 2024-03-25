@@ -88,7 +88,7 @@
                     method: 'GET', // Adjust the method and headers as per your API requirements
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': sessionToken // Include the session token in the Authorization header
+                        'Authorization': localStorage.getItem('sessionToken') // Include the session token in the Authorization header
                     }
                 });
 
