@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join Game</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f7f7f7;
+        }
+        .input-field {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            width: 80%;
+            max-width: 300px; /* Adjust the max-width as needed */
+        }
+        #joinButton {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            margin: 20px 0;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 80%;
+            max-width: 300px;
+        }
+        #joinButton:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        label {
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <label for="teamKey">Enter team key</label>
+        <input type="text" id="teamKey" class="input-field" placeholder="Team Key">
+    </div>
+    <div>
+        <label for="gameKey">Enter game key</label>
+        <input type="text" id="gameKey" class="input-field" placeholder="Game Key">
+    </div>
+    <button id="joinButton" disabled>Join Game</button>
+
+    <script>
+        // Redirect to login if no session
+        if (!localStorage.getItem('sessionToken')) {
+            window.location.href = 'login.html';
+        }
+
+        // Enable join button if both GUIDs are entered
+        const teamKeyInput = document.getElementById('teamKey');
+        const gameKeyInput = document.getElementById('gameKey');
+        const joinButton = document.getElementById('joinButton');
+
+        function updateButtonState() {
+            joinButton.disabled = !(teamKeyInput.value.length > 0 && gameKeyInput.value.length > 0);
+        }
+
+        teamKeyInput.addEventListener('input', updateButtonState);
+        gameKeyInput.addEventListener('input', updateButtonState);
+
+        joinButton.addEventListener('click', async function() {
+            const teamKey = teamKeyInput.value;
+            const gameKey = gameKeyInput.value;
+            try {
+                // Send request to the server
+                const response = await fetch(`http://localhost:5215/games/${gameKey}`, {
+                    method: 'GET', // Adjust the method and headers as per your API requirements
+                    // headers: { ... }
+                });
+
+                if (response.ok) {
+                    // Handle successful join
+                    console.log('Joined game successfully');
+                } else {
+                    console.error('Failed to join game: ', response.status);
+                }
+            } catch (error) {
+                console.error('Error: ', error);
+            }
+        });
+    </script>
+</body>
+</html>
