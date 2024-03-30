@@ -94,7 +94,7 @@
             fetch('https://airsoft-royale-aa11b05171e0.herokuapp.com/game-state', {
                 method: 'GET',
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('sessionToken')}`
+                    'Authorization': `${localStorage.getItem('sessionToken')}`
                 }
             })
             .then(response => {
