@@ -10,8 +10,12 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+// builder.Services.AddDbContext<BattleVirusDbContext>(options =>
+//     options.UseNpgsql(builder.Configuration.GetConnectionString("BattleVirusDB")));
+
+var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
 builder.Services.AddDbContext<BattleVirusDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("BattleVirusDB")));
+    options.UseNpgsql(ConvertHerokuUrlToConnectionString(connectionString)));
 builder.Services.AddHealthChecks();
 
 builder.Services.AddCors(options =>
@@ -45,3 +49,22 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+string ConvertHerokuUrlToConnectionString(string? url)
+{
+    if (url is null)
+    {
+        throw new ArgumentNullException(nameof(url));
+    }
+    
+    // Parse the connection URL
+    var uri = new Uri(url);
+    var username = uri.UserInfo.Split(':')[0];
+    var password = uri.UserInfo.Split(':')[1];
+    var dbHost = uri.Host;
+    var dbName = uri.AbsolutePath.TrimStart('/');
+    var dbPort = uri.Port;
+    
+    // Build the Npgsql connection string
+    return $"Server={dbHost};Port={dbPort};User Id={username};Password={password};Database={dbName};SSL Mode=Require;Trust Server Certificate=True";
+}
