@@ -3,8 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BattleVirusRepositories.Repositories.Entities;
 
-// TODO: rename to game_state
-[Table("user_game_status")]
+[Table("game_states")]
 public class GameState
 {
     [Key]
