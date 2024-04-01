@@ -6,9 +6,18 @@
     <title>GPS Proximity Game</title>
     <style>
         body {
+            height: 100%;
+            margin: 0;
             text-align: center;
             padding-top: 50px;
             font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #map {
+            flex-grow: 1; /* Allows the map to take up all available space */
+            width: 100%;
         }
         #myButton {
             padding: 10px 20px;
@@ -41,8 +50,8 @@
 <body>
     <h2>Zone: 2</h2>
     <p>Time to infection: 14:31</p>
-    <button id="myButton" disabled>Injection</button>
     <div id="map" style="height:400px; width:100%;"></div>
+    <button id="myButton" disabled>Injection</button>
     <script>
         const targetLatitude = 49.447158;
         const targetLongitude = 32.057284;
@@ -61,12 +70,7 @@
                     }
 
                     if (map && userLatitude && userLongitude) {
-                        var userLocation = new google.maps.LatLng(userLatitude, userLongitude);
-                        map.setCenter(userLocation);
-                        new google.maps.Marker({
-                            position: userLocation,
-                            map: map
-                        });
+                        updateUserLocation(userLatitude, userLongitude)
                     }
                 }, function(error) {
                     alert('Error getting location: ' + error.message);
@@ -127,8 +131,25 @@
         function initMap() {
             map = new google.maps.Map(document.getElementById('map'), {
                 center: {lat: -34.397, lng: 150.644},
-                zoom: 14
+                zoom: 20
             });
+        }
+
+        var userMarker; // Global variable for the user's marker
+
+        function updateUserLocation(latitude, longitude) {
+            var newPosition = new google.maps.LatLng(latitude, longitude);
+
+            if (userMarker) {
+                // If the marker exists, just update its position
+                userMarker.setPosition(newPosition);
+            } else {
+                // If the marker doesn't exist, create it
+                userMarker = new google.maps.Marker({
+                    position: newPosition,
+                    map: map
+                });
+            }
         }
 
         setInterval(checkProximity, 5000); // Check position every 5 seconds
