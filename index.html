@@ -36,12 +36,13 @@
             }
         }
     </style>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB2Ys5SQGRmaaK3UUtLuZWgpGTm_dEckTY&callback=initMap" async defer></script>
 </head>
 <body>
     <h2>Zone: 2</h2>
     <p>Time to infection: 14:31</p>
     <button id="myButton" disabled>Injection</button>
-
+    <div id="map" style="height:400px; width:100%;"></div>
     <script>
         const targetLatitude = 49.447158;
         const targetLongitude = 32.057284;
@@ -57,6 +58,15 @@
                         document.getElementById('myButton').disabled = false;
                     } else {
                         document.getElementById('myButton').disabled = true;
+                    }
+
+                    if (map && userLatitude && userLongitude) {
+                        var userLocation = new google.maps.LatLng(userLatitude, userLongitude);
+                        map.setCenter(userLocation);
+                        new google.maps.Marker({
+                            position: userLocation,
+                            map: map
+                        });
                     }
                 }, function(error) {
                     alert('Error getting location: ' + error.message);
@@ -86,29 +96,38 @@
             alert('Checkpoint activated!');
         });
 
-        if (!localStorage.getItem('sessionToken')) {
-            // No session token found, redirect to the login page
-            window.location.href = 'login.html';
-        } else {
-            // Fetch the game state from the server
-            fetch('https://airsoft-royale-aa11b05171e0.herokuapp.com/game-state', {
-                method: 'GET',
-                headers: {
-                    'Authorization': `${localStorage.getItem('sessionToken')}`
-                }
-            })
-            .then(response => {
-                if (response.ok) {
-                    // If the status is 200, stay on index.html
-                    console.log("Game state is good. Stay on index.html");
-                } else {
-                    // If the status is not 200, redirect to join-game.html
-                    window.location.href = 'join-game.html';
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching game state:', error);
-                window.location.href = 'join-game.html';
+        // if (!localStorage.getItem('sessionToken')) {
+        //     // No session token found, redirect to the login page
+        //     window.location.href = 'login.html';
+        // } else {
+        //     // Fetch the game state from the server
+        //     fetch('https://airsoft-royale-aa11b05171e0.herokuapp.com/game-state', {
+        //         method: 'GET',
+        //         headers: {
+        //             'Authorization': `${localStorage.getItem('sessionToken')}`
+        //         }
+        //     })
+        //     .then(response => {
+        //         if (response.ok) {
+        //             // If the status is 200, stay on index.html
+        //             console.log("Game state is good. Stay on index.html");
+        //         } else {
+        //             // If the status is not 200, redirect to join-game.html
+        //             window.location.href = 'join-game.html';
+        //         }
+        //     })
+        //     .catch(error => {
+        //         console.error('Error fetching game state:', error);
+        //         window.location.href = 'join-game.html';
+        //     });
+        // }
+
+        var map;
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: {lat: -34.397, lng: 150.644},
+                zoom: 14
             });
         }
 
