@@ -16,8 +16,11 @@
         }
 
         #map {
-            flex-grow: 1; /* Allows the map to take up all available space */
-            width: 100%;
+            height: 78vh; 
+            width: calc(100% - 20px);
+            margin-left: 10px;
+            margin-right: 10px;
+            margin-bottom: 10px;
         }
         #myButton {
             padding: 10px 20px;
@@ -27,6 +30,7 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
+            margin: 0 auto;
         }
         #myButton:disabled {
             background-color: #cccccc;
@@ -50,7 +54,7 @@
 <body>
     <h2>Zone: 2</h2>
     <p>Time to infection: 14:31</p>
-    <div id="map" style="height:400px; width:100%;"></div>
+    <div id="map"></div>
     <button id="myButton" disabled>Injection</button>
     <script>
         const targetLatitude = 49.447158;
@@ -144,12 +148,30 @@
                 // If the marker exists, just update its position
                 userMarker.setPosition(newPosition);
             } else {
-                // If the marker doesn't exist, create it
+                map.setCenter(newPosition);
                 userMarker = new google.maps.Marker({
                     position: newPosition,
                     map: map
                 });
+                drawZone(latitude, longitude);
             }
+        }
+
+        function drawZone(latitude, longitude) {
+            var myCenter = new google.maps.LatLng(latitude, longitude); // Replace with your coordinates
+
+            var myCircle = new google.maps.Circle({
+                center: myCenter,
+                radius: 1000, // Radius in meters (1000m = 1km)
+                map: map,
+                fillColor: '#89CFF0',
+                fillOpacity: 0.2,
+                strokeColor: '#89CFF0',
+                strokeOpacity: 0.6,
+                strokeWeight: 2
+            });
+
+            myCircle.setMap(map);
         }
 
         setInterval(checkProximity, 5000); // Check position every 5 seconds
