@@ -153,7 +153,7 @@
                     position: newPosition,
                     map: map
                 });
-                drawZone(latitude, longitude);
+                drawZone(49.469705, 31.965229);
             }
         }
 
@@ -172,6 +172,47 @@
             });
 
             myCircle.setMap(map);
+            drawPoints();
+        }
+
+        function drawPoints() {
+            const locations = [
+                {"lat": 49.4583, "lng": 31.9737},
+                {"lat": 49.4773, "lng": 31.9704},
+                {"lat": 49.4719, "lng": 31.9550},
+                {"lat": 49.4558, "lng": 31.9745},
+                {"lat": 49.4697, "lng": 31.9556},
+                {"lat": 49.4720, "lng": 31.9660},
+                {"lat": 49.4581, "lng": 31.9757},
+                {"lat": 49.4674, "lng": 31.9690},
+                {"lat": 49.4691, "lng": 31.9630},
+                {"lat": 49.4698, "lng": 31.9651},
+                {"lat": 49.4697, "lng": 31.9653},
+                {"lat": 49.4696, "lng": 31.9652},
+                {"lat": 49.4714, "lng": 31.9675},
+                {"lat": 49.4696, "lng": 31.9651},
+                {"lat": 49.4614, "lng": 31.9551},
+                {"lat": 49.4705, "lng": 31.9473},
+                {"lat": 49.4692, "lng": 31.9652},
+                {"lat": 49.4675, "lng": 31.9656},
+                {"lat": 49.4773, "lng": 31.9608},
+                {"lat": 49.4780, "lng": 31.9527}
+            ]
+
+            locations.forEach(function(location) {
+                new google.maps.Marker({
+                    position: location,
+                    map: map,
+                    icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        scale: 5,
+                        fillColor: '#FFD700',
+                        fillOpacity: 1,
+                        strokeColor: '#515151',
+                        strokeWeight: 1
+                    }
+                });
+            });
         }
 
         setInterval(checkProximity, 5000); // Check position every 5 seconds
